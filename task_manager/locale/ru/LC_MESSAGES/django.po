@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-02 12:01+0500\n"
+"POT-Creation-Date: 2024-04-03 10:24+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,12 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
-"(n%100>=11 && n%100<=14)? 2 : 3);\n"
-#: .\task_manager\views.py:16
-msgid "Password"
-msgstr "Пароль"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
 
 msgid "Task manager"
 msgstr "Менеджер задач"
@@ -34,3 +32,48 @@ msgstr "Вход"
 
 msgid "Sign up"
 msgstr "Регистрация"
+
+msgid "Register"
+msgstr "Зарегистрировать"
+
+msgid "Password"
+msgstr "Пароль"
+
+msgid "Password confirmation"
+msgstr "Подтверждение пароля"
+
+msgid "User name"
+msgstr "Имя пользователя"
+
+msgid "Name"
+msgstr "Имя"
+
+msgid "Last name"
+msgstr "Фамилия"
+
+msgid "Full name"
+msgstr "Полное имя"
+
+msgid "Date of creation"
+msgstr "Дата создания"
+
+msgid "Edit"
+msgstr "Изменить"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Obligatory field. No more than 150 characters. Only letters, numbers and symbols"
+msgstr "Обязательное поле. Не более 150 символов. Только буквы, цифры и символы"
+
+msgid "Your password must contain at least 3 characters"
+msgstr "Ваш пароль должен содержать как минимум 3 символа"
+
+msgid "To confirm, please enter your password again"
+msgstr "Для подтверждения введите, пожалуйста, пароль ещё раз"
+
+msgid "A user with the same name already exists"
+msgstr "Пользователь с таким именем уже существует"
+
+msgid "The entered passwords do not match"
+msgstr "Введенные пароли не совпадают"
