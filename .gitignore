@@ -10,4 +10,4 @@ coverage.xml
 *.ps1
 .env
 test.py
-.sqlite3
+db.sqlite3
