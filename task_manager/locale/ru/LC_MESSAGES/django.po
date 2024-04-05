@@ -30,11 +30,20 @@ msgstr "Пользователи"
 msgid "Sign in"
 msgstr "Вход"
 
+msgid "Logout"
+msgstr "Выход"
+
 msgid "Sign up"
 msgstr "Регистрация"
 
 msgid "Register"
 msgstr "Зарегистрировать"
+
+msgid "You are logged in"
+msgstr "Вы залогинены"
+
+msgid "You are logged out"
+msgstr "Вы разлогинены"
 
 msgid "Password"
 msgstr "Пароль"
@@ -60,8 +69,20 @@ msgstr "Дата создания"
 msgid "Edit"
 msgstr "Изменить"
 
+msgid "Change user"
+msgstr "Изменение пользователя"
+
 msgid "Delete"
 msgstr "Удалить"
+
+msgid "Statuses"
+msgstr "Статусы"
+
+msgid "Tags"
+msgstr "Метки"
+
+msgid "Tasks"
+msgstr "Задачи"
 
 msgid "Obligatory field. No more than 150 characters. Only letters, numbers and symbols"
 msgstr "Обязательное поле. Не более 150 символов. Только буквы, цифры и символы"
@@ -77,3 +98,24 @@ msgstr "Пользователь с таким именем уже сущест�
 
 msgid "The entered passwords do not match"
 msgstr "Введенные пароли не совпадают"
+
+msgid "User successfully registered"
+msgstr "Пользователь успешно зарегистрирован"
+
+msgid "User successfully changed"
+msgstr "Пользователь успешно изменен"
+
+msgid "User successfully deleted"
+msgstr "Пользователь успешно удален"
+
+msgid "Deleting a user"
+msgstr "Удаление пользователя"
+
+msgid "Are you sure you want to delete"
+msgstr "Вы уверены, что хотите удалить"
+
+msgid "Yes, delete"
+msgstr "Да, удалить"
+
+msgid "You do not have permission to change another user"
+msgstr "У вас нет прав для изменения другого пользователя"

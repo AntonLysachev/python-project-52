@@ -13,9 +13,11 @@ class UserFormCreated(forms.ModelForm):
 
 
     def clean_username(self) -> str:
+        changed_data = self.changed_data
         username = self.cleaned_data.get('username')
-        if User.objects.filter(username=username).exists():
-            self.add_error('username', _("A user with the same name already exists"))
+        if 'username' in changed_data:
+            if User.objects.filter(username=username).exists():
+                self.add_error('username', _("A user with the same name already exists"))
         return username
 
     def clean(self):

@@ -3,9 +3,10 @@ from django.http import HttpRequest
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import LoginForm
+from django.utils.translation import gettext as _
 
 class IndexView(TemplateView):
     template_name = 'index.html'
@@ -26,6 +27,13 @@ class LoginView(TemplateView):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            messages.success(request, 'Вы залогинены')
+            messages.info(request, _('You are logged in'))
             return redirect('index')
+        form.add_error(None, _("Пожалуйста, введите правильные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру"))
         return render(request, 'login.html', {'form': form})
+    
+
+def logout_view(request):
+    logout(request)
+    messages.info(request, _('You are logged out'))
+    return redirect('index')
