@@ -1,5 +1,12 @@
+MANAGE := poetry run python manage.py
+
+setup: install migrate
+
 install:
 	poetry install --no-root
+
+migrate:
+	@$(MANAGE) migrate
 
 dev:
 	python manage.py runserver
@@ -10,3 +17,6 @@ start:
 
 lint:
 	poetry run flake8 task_manager
+
+test:
+	python manage.py test
