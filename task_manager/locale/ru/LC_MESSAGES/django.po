@@ -69,11 +69,23 @@ msgstr "Дата создания"
 msgid "Edit"
 msgstr "Изменить"
 
+msgid "Create"
+msgstr "Создать"
+
 msgid "Change user"
 msgstr "Изменение пользователя"
 
+msgid "Create status"
+msgstr "Создать статус"
+
+msgid "Edit status"
+msgstr "Изменение статуса"
+
 msgid "Delete"
 msgstr "Удалить"
+
+msgid "Deleting a status"
+msgstr "Удаление статуса"
 
 msgid "Statuses"
 msgstr "Статусы"
@@ -119,3 +131,15 @@ msgstr "Да, удалить"
 
 msgid "You do not have permission to change another user"
 msgstr "У вас нет прав для изменения другого пользователя"
+
+msgid "A task status with the same name already exists"
+msgstr "Статус задачи с таким именем уже существует"
+
+msgid "Status successfully created"
+msgstr "Статус успешно создан"
+
+msgid "Status changed successfully"
+msgstr "Статус успешно изменен"
+
+msgid "Status deleted successfully"
+msgstr "Статус успешно удален"

@@ -8,8 +8,6 @@ from django.contrib.auth.models import User
 from .forms import UserFormCreated
 from django.contrib.auth.hashers import make_password
 from django.utils.translation import gettext as _
-from django.contrib.auth.decorators import login_required
-
 
 class UsersIndexView(TemplateView):
 
@@ -47,27 +45,29 @@ class UserCreateView(TemplateView):
 
 class UserUpdateView(TemplateView):
 
-    user = User
     context = {'url_name':'user_update',
                    'head':_('Change user'),
                    'button':_('Edit')}
     
-    @login_required
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        self.request_user  = request.user
-        
-        user_id = kwargs.get('id')
-        user = User.objects.get(id=user_id)
 
-        if self.request_user == user:
+        if request.user.is_authenticated:
+            self.request_user  = request.user
+            
+            user_id = kwargs.get('id')
+            user = User.objects.get(id=user_id)
+            
+            if self.request_user == user:
 
-            form = UserFormCreated(instance=user)
-            self.context['form'] = form
-            self.context['id'] = user_id
+                form = UserFormCreated(instance=user)
+                self.context['form'] = form
+                self.context['id'] = user_id
 
-            return render(request, 'users/form.html', self.context)
-        messages.error(request, _('You do not have permission to change another user'))
-        return redirect('users')
+                return render(request, 'users/form.html', self.context)
+            messages.error(request, _('You do not have permission to change another user'))
+            return redirect('users')
+        messages.error(request, 'Вы не авторизованы! Пожалуйста, выполните вход')
+        return redirect('login')
 
     def post(self, request, *args, **kwargs) -> HttpRequest:
 
@@ -90,23 +90,23 @@ class UserUpdateView(TemplateView):
 
 class UserDeleteView(TemplateView):
     
-    user = User
-
-    @login_required
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
-        user_id = kwargs.get('id')
-        user = User.objects.get(id=user_id)
-        
-        if request.user == user:
+        if request.user.is_authenticated:
+            user_id = kwargs.get('id')
+            user = User.objects.get(id=user_id)
             
-            full_name = f'{user.first_name} {user.last_name}'
-            context = {'id': user_id,
-                       'full_name': full_name,}
+            if request.user == user:
+                
+                full_name = f'{user.first_name} {user.last_name}'
+                context = {'id': user_id,
+                        'full_name': full_name,}
 
-            return render(request, 'users/delete.html', context)
-        messages.error(request, _('You do not have permission to change another user'))
-        return redirect('users')
+                return render(request, 'users/delete.html', context)
+            messages.error(request, _('You do not have permission to change another user'))
+            return redirect('users')
+        messages.error(request, 'Вы не авторизованы! Пожалуйста, выполните вход')
+        return redirect('login')
     
     def post(self, request, *args, **kwargs):
         

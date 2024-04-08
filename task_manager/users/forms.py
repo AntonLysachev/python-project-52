@@ -26,3 +26,7 @@ class UserFormCreated(forms.ModelForm):
         password2 = cleaned_data.get("password2")
         if password1 != password2:
             self.add_error('password2', _("The entered passwords do not match"))
+        for field in self.fields:
+            data = cleaned_data.get(field)
+            if data == '':
+                self.add_error(field, _('Обязательное поле'))

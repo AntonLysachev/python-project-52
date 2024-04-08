@@ -12,11 +12,21 @@
   {% csrf_token %}
 <div class="mb-3">
   <label class="form-label" for="id_first_name">{% translate 'Name' %}</label>
-  <input type="text" name="first_name" maxlength="150" class="form-control {% if form.first_name.value and form.is_bound %}is-valid{% endif %}" placeholder="{% translate 'Name' %}" required="" id="id_first_name" value="{{ form.first_name.value|default_if_none:'' }}">
+  <input type="text" name="first_name" maxlength="150" class="form-control {% if form.first_name.errors %}is-invalid{% endif %} {% if form.first_name.value and form.is_bound %}is-valid{% endif %}" placeholder="{% translate 'Name' %}" required="" id="id_first_name" value="{{ form.first_name.value|default_if_none:'' }}">
+  {% for error in form.first_name.errors %}
+  <div class="invalid-feedback">
+    {{ error }}
+  </div>
+  {% endfor %}
 </div>
 <div class="mb-3">
   <label class="form-label" for="id_last_name">{% translate 'Last name' %}</label>
-  <input type="text" name="last_name" maxlength="150" class="form-control {% if form.last_name.value and form.is_bound %}is-valid{% endif %}" placeholder="{% translate 'Last name' %}" required="" id="id_last_name" value="{{ form.last_name.value|default_if_none:'' }}">
+  <input type="text" name="last_name" maxlength="150" class="form-control {% if form.last_name.errors %}is-invalid{% endif %} {% if form.last_name.value and form.is_bound %}is-valid{% endif %}" placeholder="{% translate 'Last name' %}" required="" id="id_last_name" value="{{ form.last_name.value|default_if_none:'' }}">
+  {% for error in form.last_name.errors %}
+  <div class="invalid-feedback">
+    {{ error }}
+  </div>
+  {% endfor %}
 </div>
 <div class="mb-3">
   <label class="form-label" for="id_username">{% translate 'User name' %}</label>
@@ -26,11 +36,16 @@
   <div class="invalid-feedback">
     {{ error }}
   </div>
-{% endfor %}
+  {% endfor %}
 </div>
 <div class="mb-3">
   <label class="form-label" for="id_password1">{% translate 'Password' %}</label>
-  <input type="password" name="password1" autocomplete="new-password" class="form-control {% if form.password1.value %}is-valid{% endif %}" placeholder="{% translate 'Password' %}" required="" id="id_password1">
+  <input type="password" name="password1" autocomplete="new-password" class="form-control {% if form.first_name.errors %}is-invalid{% endif %} {% if form.password1.value %}is-valid{% endif %}" placeholder="{% translate 'Password' %}" required="" id="id_password1">
+  {% for error in form.password1.errors %}
+  <div class="invalid-feedback">
+    {{ error }}
+  </div>
+  {% endfor %}
   <div class="form-text">
     <ul>
       <li>{% translate 'Your password must contain at least 3 characters' %}.</li>

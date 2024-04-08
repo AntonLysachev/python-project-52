@@ -20,3 +20,6 @@ lint:
 
 test:
 	python manage.py test
+
+compil:
+	python manage.py compilemessages
