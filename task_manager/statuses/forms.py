@@ -1,4 +1,3 @@
-from typing import Any
 from django.forms import ModelForm
 from django.utils.translation import gettext as _
 from .models import Statuses
