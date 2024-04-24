@@ -1,9 +1,12 @@
 MANAGE := poetry run python manage.py
 
-setup: install migrate
+setup: install makemigrations migrate
 
 install:
 	poetry install --no-root
+
+makemigrations:
+	@$(MANAGE) makemigrations
 
 migrate:
 	@$(MANAGE) migrate
