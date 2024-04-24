@@ -197,3 +197,15 @@ msgstr "Удаление задачи"
 
 msgid "The task was successfully modified"
 msgstr "Задача успешно изменена"
+
+msgid "Cannot delete label because it is in use"
+msgstr "Невозможно удалить метку, потому что она используется"
+
+msgid "Label deleted successfully"
+msgstr "Метка успешно удалена"
+
+msgid "Label changed successfully"
+msgstr "Метка успешно изменена"
+
+msgid "Label successfully created"
+msgstr "Метка успешно создана"
