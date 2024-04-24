@@ -41,8 +41,8 @@ class TasksIndexView(LoginRequiredMixin, BaseTasksView):
                 tasks = tasks.filter(status=form.cleaned_data.get('status'))
             if form.cleaned_data['executor']:
                 tasks = tasks.filter(executor=form.cleaned_data['executor'])
-            if form.cleaned_data.get('label'):
-                tasks = tasks.filter(label=form.cleaned_data['label'])
+            if form.cleaned_data.get('labels'):
+                tasks = tasks.filter(labels=form.cleaned_data['labels'])
             if form.cleaned_data['self_tasks']:
                 tasks = tasks.filter(autor=request.user)
             context['form'] = form

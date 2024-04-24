@@ -21,6 +21,15 @@ msgstr ""
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
 
+msgid "Create label"
+msgstr "Создать метку"
+
+msgid "Deleting a label"
+msgstr "Удаление метка"
+
+msgid "Update label"
+msgstr "Изменение метки"
+
 msgid "Task manager"
 msgstr "Менеджер задач"
 
