@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-5vqa0%6bxh)z+o@w=&8pg42kk&f0pe4_yayxilw_(=_!3&p+dl"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG_SWITCH')
 
 ALLOWED_HOSTS = ['webserver', 'localhost', '127.0.0.1', 'task-manager-srxp.onrender.com']
 
@@ -123,7 +123,7 @@ LANGUAGES = [
     ('ru', 'Russian'),
 ]
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'Asia/Tashkent'
 
 USE_I18N = True
 
