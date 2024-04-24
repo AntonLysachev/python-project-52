@@ -81,7 +81,10 @@ class TaskShowView(LoginRequiredMixin, TemplateView):
         task_dict = model_to_dict(task)
         task_dict['autor'] = f"{task.autor.first_name} {task.autor.last_name}"
         task_dict['status'] = task.status
-        task_dict['executor'] = f"{task.executor.first_name} {task.executor.last_name}"
+        if task.executor:
+            task_dict['executor'] = f"{task.executor.first_name} {task.executor.last_name}"
+        else:
+            task_dict['executor'] = None
         task_dict['created_at'] = task.created_at
         return render(request, 'tasks/show.html', context=task_dict)
     

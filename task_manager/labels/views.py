@@ -96,4 +96,3 @@ class LabelDeleteView(LoginRequiredMixin, TemplateView):
             messages.success(request, _('Label deleted successfully'))
             
         return redirect('labels')
-
