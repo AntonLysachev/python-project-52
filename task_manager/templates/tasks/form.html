@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% load i18n django_bootstrap5 %}
 
-{% block title %}{% translate 'Sign up' %}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
 <div class="container wrapper flex-grow-1">
     <h1 class="my-4">
-{{ head }}
+{{ title }}
     </h1>
 <form action="{% if id %}{% url url_name id=id %}{% else %}{% url url_name %}{% endif %}" method="post">
-  {% csrf_token %}
-  {% bootstrap_form form %}
-  <input class="btn btn-primary" type="submit" value={{ button }}>
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <input class="btn btn-primary" type="submit" value="{{ button }}">
 </form>
 
   </div>

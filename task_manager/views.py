@@ -6,16 +6,20 @@ from django.views.generic import TemplateView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import LoginForm
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
+
 
 class IndexView(TemplateView):
-    template_name = 'index.html'
+    
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         return render(request, 'index.html')
 
 
 class LoginView(TemplateView):
+
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if 'next' in request.GET:
+            messages.error(request, _('You are not authorized! Please log in'))
         form = LoginForm()
         return render(request, 'login.html', {'form': form})
     
@@ -24,7 +28,7 @@ class LoginView(TemplateView):
         form = LoginForm(request.POST)
         username = request.POST['username']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(username=username, password=password)
         if user:
             login(request, user)
             messages.info(request, _('You are logged in'))

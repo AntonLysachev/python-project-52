@@ -1,24 +1,16 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n django_bootstrap5 %}
 
-{% block title %}{% translate 'Create status' %}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
 <div class="container wrapper flex-grow-1">
     <h1 class="my-4">
-{{ head }}
+{{ title }}
     </h1>
 <form action="{% if id %}{% url url_name id=id %}{% else %}{% url url_name %}{% endif %}" method="post">
 {% csrf_token %}
-<div class="mb-3">
-  <label class="form-label" for="id_name">{% translate 'Name' %}</label>
-  <input type="text" name="name" maxlength="100" class="form-control {% if form.name.errors %}is-invalid{% endif %}" placeholder="{% translate 'Name' %}" required="" id="id_name" value="{{ form.name.value|default_if_none:'' }}">
-  {% for error in form.name.errors %}
-  <div class="invalid-feedback">
-    {{ error }}
-  </div>
-  {% endfor %}
-</div>
+{% bootstrap_form form %}
   <input class="btn btn-primary" type="submit" value="{{ button }}">
 </form>
   </div>

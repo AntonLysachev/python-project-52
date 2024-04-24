@@ -27,6 +27,9 @@ msgstr "Менеджер задач"
 msgid "Users"
 msgstr "Пользователи"
 
+msgid "Autor"
+msgstr "Автор"
+
 msgid "Sign in"
 msgstr "Вход"
 
@@ -66,20 +69,32 @@ msgstr "Полное имя"
 msgid "Date of creation"
 msgstr "Дата создания"
 
-msgid "Edit"
+msgid "Update"
 msgstr "Изменить"
 
 msgid "Create"
 msgstr "Создать"
 
+msgid "Executor"
+msgstr "Исполнитель"
+
 msgid "Change user"
 msgstr "Изменение пользователя"
+
+msgid "Status"
+msgstr "Статус"
 
 msgid "Create status"
 msgstr "Создать статус"
 
-msgid "Edit status"
+msgid "Create task"
+msgstr "Создать Задачу"
+
+msgid "Update status"
 msgstr "Изменение статуса"
+
+msgid "Update task"
+msgstr "Изменение задачи"
 
 msgid "Delete"
 msgstr "Удалить"
@@ -90,11 +105,20 @@ msgstr "Удаление статуса"
 msgid "Statuses"
 msgstr "Статусы"
 
-msgid "Tags"
+msgid "Labels"
 msgstr "Метки"
+
+msgid "Label"
+msgstr "Метка"
 
 msgid "Tasks"
 msgstr "Задачи"
+
+msgid "Description"
+msgstr "Описание"
+
+msgid "Please enter the correct username and password. Both fields can be case sensitive"
+msgstr "Пожалуйста, введите правильные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру"
 
 msgid "Obligatory field. No more than 150 characters. Only letters, numbers and symbols"
 msgstr "Обязательное поле. Не более 150 символов. Только буквы, цифры и символы"
@@ -120,6 +144,9 @@ msgstr "Пользователь успешно изменен"
 msgid "User successfully deleted"
 msgstr "Пользователь успешно удален"
 
+msgid "Task successfully deleted"
+msgstr "Задача успешно удалена"
+
 msgid "Deleting a user"
 msgstr "Удаление пользователя"
 
@@ -143,3 +170,21 @@ msgstr "Статус успешно изменен"
 
 msgid "Status deleted successfully"
 msgstr "Статус успешно удален"
+
+msgid "You are not authorized! Please log in"
+msgstr "Вы не авторизованы! Пожалуйста, выполните вход"
+
+msgid "Cannot delete status because it is in use"
+msgstr "Невозможно удалить статус, потому что он используется"
+
+msgid "Only self tasks"
+msgstr "Только свои задачи"
+
+msgid "Only its author can delete a task"
+msgstr "Задачу может удалить только ее автор"
+
+msgid "Deleting a task"
+msgstr "Удаление задачи"
+
+msgid "The task was successfully modified"
+msgstr "Задача успешно изменена"
