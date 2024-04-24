@@ -27,8 +27,6 @@ class BaseTasksView(TemplateView):
 
 class TasksIndexView(LoginRequiredMixin, BaseTasksView):
 
-    login_url = '/login/'
-    
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         context = self.get_context()
         context['tasks'] = Task.objects.all()
@@ -51,8 +49,6 @@ class TasksIndexView(LoginRequiredMixin, BaseTasksView):
     
 
 class TaskCreateView(LoginRequiredMixin, BaseTasksView):
-
-    login_url = '/login/'
 
     context = {'url_name': 'task_create',
                'title': _('Create task'),
@@ -78,8 +74,6 @@ class TaskCreateView(LoginRequiredMixin, BaseTasksView):
 
 class TaskShowView(LoginRequiredMixin, TemplateView):
 
-    login_url = '/login/'
-
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
         task_id = kwargs.get('id')
@@ -93,8 +87,6 @@ class TaskShowView(LoginRequiredMixin, TemplateView):
     
 
 class TaskUpdateView(LoginRequiredMixin, BaseTasksView):
-
-    login_url = '/login/'
 
     context = {'url_name': 'task_update',
                'title': _('Update task'),
@@ -122,8 +114,6 @@ class TaskUpdateView(LoginRequiredMixin, BaseTasksView):
     
 
 class TaskDeleteView(LoginRequiredMixin, BaseTasksView):
-
-    login_url = '/login/'
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         task_id = kwargs.get('id')

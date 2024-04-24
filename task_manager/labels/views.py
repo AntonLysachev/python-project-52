@@ -7,13 +7,10 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 from .models import Label
 from .forms import LabelForm
-from django.db.models.deletion import ProtectedError
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class LabelsIndexView(LoginRequiredMixin, TemplateView):
-
-    login_url = '/login/'
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         
@@ -27,8 +24,6 @@ class LabelCreateView(LoginRequiredMixin, TemplateView):
     context = {'url_name': 'label_create',
                'title': _('Create label'),
                'button': _('Create')}
-    
-    login_url = '/login/'
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
@@ -54,8 +49,6 @@ class LabelUpdateView(LoginRequiredMixin, TemplateView):
     context = {'url_name': 'label_update',
                'title': _('Update label'),
                'button': _('Update')}
-
-    login_url = '/login/'
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
@@ -83,8 +76,6 @@ class LabelUpdateView(LoginRequiredMixin, TemplateView):
 
 
 class LabelDeleteView(LoginRequiredMixin, TemplateView):
-
-    login_url = '/login/'
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 

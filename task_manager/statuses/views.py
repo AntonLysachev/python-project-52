@@ -13,8 +13,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 class StatusesIndexView(LoginRequiredMixin, TemplateView):
 
-    login_url = '/login/'
-
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         
         statuses = Status.objects.all()
@@ -27,8 +25,6 @@ class StatusCreateView(LoginRequiredMixin, TemplateView):
     context = {'url_name': 'status_create',
                'title': _('Create status'),
                'button': _('Create')}
-    
-    login_url = '/login/'
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
@@ -54,8 +50,6 @@ class StatusUpdateView(LoginRequiredMixin, TemplateView):
     context = {'url_name': 'status_update',
                'title': _('Edit status'),
                'button': _('Update')}
-
-    login_url = '/login/'
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
@@ -83,8 +77,6 @@ class StatusUpdateView(LoginRequiredMixin, TemplateView):
 
 
 class StatusDeleteView(LoginRequiredMixin, TemplateView):
-
-    login_url = '/login/'
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
