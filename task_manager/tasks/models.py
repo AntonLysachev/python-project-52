@@ -12,3 +12,6 @@ class Task(models.Model):
     description = models.TextField(default='description', blank=True)
     labels = models.ManyToManyField(Label)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
