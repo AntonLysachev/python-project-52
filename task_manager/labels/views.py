@@ -13,9 +13,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 class LabelsIndexView(LoginRequiredMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        
+
         labels = Label.objects.all()
-            
+
         return render(request, 'labels/index.html', context={'labels': labels})
 
 
@@ -32,7 +32,6 @@ class LabelCreateView(LoginRequiredMixin, TemplateView):
 
         return render(request, 'labels/form.html', self.context)
 
-
     def post(self, request, *args, **kwargs) -> HttpRequest:
         form = LabelForm(request.POST)
         self.context['form'] = form
@@ -40,7 +39,7 @@ class LabelCreateView(LoginRequiredMixin, TemplateView):
             form.save()
             messages.success(request, _('Label successfully created'))
             return redirect('labels')
-        
+
         return render(request, 'labels/form.html', self.context)
 
 
@@ -60,7 +59,6 @@ class LabelUpdateView(LoginRequiredMixin, TemplateView):
 
         return render(request, 'labels/form.html', self.context)
 
-    
     def post(self, request, *args, ** kwargs) -> HttpRequest:
 
         label_id = kwargs.get('id')
@@ -84,7 +82,6 @@ class LabelDeleteView(LoginRequiredMixin, TemplateView):
         name = label.name
         return render(request, 'labels/delete.html', context={'name': name, 'id': label_id})
 
-    
     def post(self, request, *args, **kwargs):
         label_id = kwargs.get('id')
         label = Label.objects.get(id=label_id)
@@ -94,5 +91,5 @@ class LabelDeleteView(LoginRequiredMixin, TemplateView):
         else:
             label.delete()
             messages.success(request, _('Label deleted successfully'))
-            
+
         return redirect('labels')

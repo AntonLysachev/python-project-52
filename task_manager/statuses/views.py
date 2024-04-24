@@ -14,9 +14,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 class StatusesIndexView(LoginRequiredMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        
+
         statuses = Status.objects.all()
-            
+
         return render(request, 'statuses/index.html', context={'statuses': statuses})
 
 
@@ -33,7 +33,6 @@ class StatusCreateView(LoginRequiredMixin, TemplateView):
 
         return render(request, 'statuses/form.html', self.context)
 
-
     def post(self, request, *args, **kwargs) -> HttpRequest:
         form = StatusForm(request.POST)
         self.context['form'] = form
@@ -41,7 +40,7 @@ class StatusCreateView(LoginRequiredMixin, TemplateView):
             form.save()
             messages.success(request, _('Status successfully created'))
             return redirect('statuses')
-        
+
         return render(request, 'statuses/form.html', self.context)
 
 
@@ -61,7 +60,6 @@ class StatusUpdateView(LoginRequiredMixin, TemplateView):
 
         return render(request, 'statuses/form.html', self.context)
 
-    
     def post(self, request, *args, ** kwargs) -> HttpRequest:
 
         status_id = kwargs.get('id')
@@ -85,7 +83,6 @@ class StatusDeleteView(LoginRequiredMixin, TemplateView):
         name = status.name
         return render(request, 'statuses/delete.html', context={'name': name, 'id': status_id})
 
-    
     def post(self, request, *args, **kwargs):
         status_id = kwargs.get('id')
         status = Status.objects.get(id=status_id)

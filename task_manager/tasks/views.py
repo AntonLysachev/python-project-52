@@ -46,7 +46,7 @@ class TasksIndexView(LoginRequiredMixin, BaseTasksView):
             context['form'] = form
             context['tasks'] = tasks
         return render(request, 'tasks/index.html', context=context)
-    
+
 
 class TaskCreateView(LoginRequiredMixin, BaseTasksView):
 
@@ -57,7 +57,7 @@ class TaskCreateView(LoginRequiredMixin, BaseTasksView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         self.context.update(self.get_context())
         return render(request, 'tasks/form.html', context=self.context)
-    
+
     def post(self, request, *args, **kwargs):
 
         form = TaskForm(request.POST)
@@ -70,7 +70,7 @@ class TaskCreateView(LoginRequiredMixin, BaseTasksView):
             return redirect('tasks')
         self.context['form'] = form
         return render(request, 'tasks/form.html', context=self.context)
-    
+
 
 class TaskShowView(LoginRequiredMixin, TemplateView):
 
@@ -87,14 +87,14 @@ class TaskShowView(LoginRequiredMixin, TemplateView):
             task_dict['executor'] = None
         task_dict['created_at'] = task.created_at
         return render(request, 'tasks/show.html', context=task_dict)
-    
+
 
 class TaskUpdateView(LoginRequiredMixin, BaseTasksView):
 
     context = {'url_name': 'task_update',
                'title': _('Update task'),
                'button': _('Update')}
-    
+
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         task_id = kwargs.get('id')
         task = Task.objects.get(id=task_id)
@@ -102,7 +102,7 @@ class TaskUpdateView(LoginRequiredMixin, BaseTasksView):
         self.context['form'] = form
         self.context['id'] = task_id
         return render(request, 'tasks/form.html', context=self.context)
-    
+
     def post(self, request: HttpRequest, *args, ** kwargs) -> HttpRequest:
         task_id = kwargs.get('id')
         task = Task.objects.get(id=task_id)
@@ -114,7 +114,7 @@ class TaskUpdateView(LoginRequiredMixin, BaseTasksView):
             messages.success(request, _('The task was successfully modified'))
             return redirect('tasks')
         return render(request, 'tasks/form.html', self.context)
-    
+
 
 class TaskDeleteView(LoginRequiredMixin, BaseTasksView):
 
@@ -122,7 +122,7 @@ class TaskDeleteView(LoginRequiredMixin, BaseTasksView):
         task_id = kwargs.get('id')
         task = model_to_dict(Task.objects.get(id=task_id))
         return render(request, 'tasks/delete.html', context=task)
-    
+
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpRequest:
 
         task_id = kwargs.get('id')

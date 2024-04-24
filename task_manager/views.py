@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class IndexView(TemplateView):
-    
+
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         return render(request, 'index.html')
 
@@ -22,7 +22,6 @@ class LoginView(TemplateView):
             messages.error(request, _('You are not authorized! Please log in'))
         form = LoginForm()
         return render(request, 'login.html', {'form': form})
-    
 
     def post(self, request, *args, **kwargs):
         form = LoginForm(request.POST)
@@ -35,7 +34,7 @@ class LoginView(TemplateView):
             return redirect('index')
         form.add_error(None, _("Пожалуйста, введите правильные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру"))
         return render(request, 'login.html', {'form': form})
-    
+
 
 def logout_view(request):
     logout(request)

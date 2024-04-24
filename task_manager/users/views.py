@@ -8,19 +8,21 @@ from django.contrib.auth.models import User
 from .forms import UserFormCreated
 from django.contrib.auth.hashers import make_password
 from django.utils.translation import gettext as _
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 class UsersIndexView(TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         users = User.objects.filter(is_active=True)
-        return render(request, 'users/index.html', context={'users': users,})
-    
+        return render(request, 'users/index.html', context={'users': users})
+
 
 class UserCreateView(TemplateView):
 
-    context = {'url_name':'user_create',
-            'head':_('Sign up'),
-            'button':_('Register')}
+    context = {'url_name': 'user_create',
+               'head': _('Sign up'),
+               'button': _('Register')}
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
@@ -39,35 +41,31 @@ class UserCreateView(TemplateView):
             messages.success(request, _('User successfully registered'))
 
             return redirect('login')
-        
+
         return render(request, 'users/form.html', self.context)
-    
 
-class UserUpdateView(TemplateView):
 
-    context = {'url_name':'user_update',
-                   'head':_('Change user'),
-                   'button':_('Edit')}
-    
+class UserUpdateView(LoginRequiredMixin, TemplateView):
+
+    context = {'url_name': 'user_update',
+               'head': _('Change user'),
+               'button': _('Edit')}
+
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
-        if request.user.is_authenticated:
-            self.request_user  = request.user
-            
-            user_id = kwargs.get('id')
-            user = User.objects.get(id=user_id)
-            
-            if self.request_user == user:
+        self.request_user = request.user
+        user_id = kwargs.get('id')
+        user = User.objects.get(id=user_id)
 
-                form = UserFormCreated(instance=user)
-                self.context['form'] = form
-                self.context['id'] = user_id
+        if self.request_user == user:
 
-                return render(request, 'users/form.html', self.context)
-            messages.error(request, _('You do not have permission to change another user'))
-            return redirect('users')
-        messages.error(request, 'Вы не авторизованы! Пожалуйста, выполните вход')
-        return redirect('login')
+            form = UserFormCreated(instance=user)
+            self.context['form'] = form
+            self.context['id'] = user_id
+
+            return render(request, 'users/form.html', self.context)
+        messages.error(request, _('You do not have permission to change another user'))
+        return redirect('users')
 
     def post(self, request, *args, **kwargs) -> HttpRequest:
 
@@ -84,32 +82,29 @@ class UserUpdateView(TemplateView):
             user.save()
             messages.success(request, _('User successfully changed'))
             return redirect('users')
-        
+
         return render(request, 'users/form.html', self.context)
 
 
-class UserDeleteView(TemplateView):
-    
+class UserDeleteView(LoginRequiredMixin, TemplateView):
+
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
-        if request.user.is_authenticated:
-            user_id = kwargs.get('id')
-            user = User.objects.get(id=user_id)
-            
-            if request.user == user:
-                
-                full_name = f'{user.first_name} {user.last_name}'
-                context = {'id': user_id,
-                        'full_name': full_name,}
+        user_id = kwargs.get('id')
+        user = User.objects.get(id=user_id)
 
-                return render(request, 'users/delete.html', context)
-            messages.error(request, _('You do not have permission to change another user'))
-            return redirect('users')
-        messages.error(request, 'Вы не авторизованы! Пожалуйста, выполните вход')
-        return redirect('login')
-    
+        if request.user == user:
+
+            full_name = f'{user.first_name} {user.last_name}'
+            context = {'id': user_id,
+                       'full_name': full_name}
+
+            return render(request, 'users/delete.html', context)
+        messages.error(request, _('You do not have permission to change another user'))
+        return redirect('users')
+
     def post(self, request, *args, **kwargs):
-        
+
         user_id = kwargs.get('id')
         user = User.objects.get(id=user_id)
         user.is_active = False

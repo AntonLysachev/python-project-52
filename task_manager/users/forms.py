@@ -2,15 +2,15 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 
+
 class UserFormCreated(forms.ModelForm):
-    
+
     password1 = forms.CharField(widget=forms.PasswordInput, label=_('Password'), help_text=_('Your password must contain at least 3 characters'), min_length=3)
     password2 = forms.CharField(widget=forms.PasswordInput, label=_('Password confirmation'), help_text=_('To confirm, please enter your password again'))
 
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username', 'password1', 'password2']
-
 
     def clean_username(self) -> str:
         changed_data = self.changed_data

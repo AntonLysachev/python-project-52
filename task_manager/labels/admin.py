@@ -6,4 +6,5 @@ class LabelAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'name', 'created_at')
 
+
 admin.site.register(Label, LabelAdmin)

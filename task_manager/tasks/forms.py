@@ -14,7 +14,7 @@ class UserChoiceField(forms.ModelChoiceField):
 
 class TaskForm(ModelForm):
     name = forms.CharField(label=_("Name"))
-    status = forms.ModelChoiceField(queryset=Status.objects.all(), label=_("Status")) 
+    status = forms.ModelChoiceField(queryset=Status.objects.all(), label=_("Status"))
     description = forms.CharField(widget=forms.Textarea, required=False, label=_("Description"))
     executor = UserChoiceField(queryset=User.objects.filter(is_active=True), required=False, label=_("Executor"))
     labels = forms.ModelMultipleChoiceField(queryset=Label.objects.all(), required=False, label=_("Labels"))
@@ -30,7 +30,7 @@ class TaskForm(ModelForm):
             if Task.objects.filter(name=name).exists():
                 self.add_error('name', _("Задача с таким именем уже существует"))
         return name
-    
+
 
 class TaskFilterForm(Form):
     status = forms.ModelChoiceField(queryset=Status.objects.all(), required=False, label=_('Status'))
