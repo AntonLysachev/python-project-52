@@ -85,9 +85,9 @@ class TaskShowView(LoginRequiredMixin, TemplateView):
         task_id = kwargs.get('id')
         task = Task.objects.get(id=task_id)
         task_dict = model_to_dict(task)
-        task_dict['autor'] = task.autor
+        task_dict['autor'] = f"{task.autor.first_name} {task.autor.last_name}"
         task_dict['status'] = task.status
-        task_dict['executor'] = task.executor
+        task_dict['executor'] = f"{task.executor.first_name} {task.executor.last_name}"
         task_dict['created_at'] = task.created_at
         return render(request, 'tasks/show.html', context=task_dict)
     
