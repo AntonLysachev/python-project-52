@@ -40,3 +40,9 @@ def logout_view(request):
     logout(request)
     messages.info(request, _('You are logged out'))
     return redirect('index')
+
+
+def error(request):
+    a = None
+    a.hello()
+    return HttpResponse("Hello, world. You're at the pollapp error.")

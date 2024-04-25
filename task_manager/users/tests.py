@@ -16,6 +16,7 @@ class UsersTestCase(TestCase):
     def test_update_user(self):
         user = User.objects.get(id=1)
         user.first_name = 'TestName2'
+        user.save()
         assert user.first_name == 'TestName2'
 
     def test_delete_user(self):

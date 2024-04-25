@@ -1,20 +1,42 @@
 from django.test import TestCase
-from .models import Statuse
+from .models import Status
+from task_manager.tasks.models import Task
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from django.db.models.deletion import ProtectedError
 
 
-class UsersTestCase(TestCase):
+class StatusTestCase(TestCase):
     def setUp(self):
-        Statuse.objects.create(name='Name')
+        User.objects.create(first_name='TestName',
+                            last_name='TestLastName',
+                            username='TestUser',
+                            password=make_password('password'))
+        user = User.objects.get(id=1)
 
-    def test_create_user(self):
-        assert Statuse.objects.count() == 1
+        Status.objects.create(name='Name')
+        status = Status.objects.get(id=1)
 
-    def test_update_user(self):
-        status = Statuse.objects.get(id=1)
-        status.name = 'TestName2'
-        assert status.name == 'TestName2'
+        Task.objects.create(name='Task',
+                            autor=user,
+                            status=status)
 
-    def test_delete_user(self):
-        status = Statuse.objects.get(id=1)
+    def test_create_status(self):
+        assert Status.objects.count() == 1
+
+    def test_update_status(self):
+        status = Status.objects.get(id=1)
+        status.name = 'Name2'
+        status.save()
+        assert status.name == 'Name2'
+
+    def test_delete_exception_status(self):
+        status = Status.objects.get(id=1)
+        self.assertRaises(ProtectedError, status.delete)
+
+    def test_delete_status(self):
+        task = Task.objects.get(id=1)
+        task.delete()
+        status = Status.objects.get(id=1)
         status.delete()
-        assert Statuse.objects.count() == 0
+        assert Status.objects.count() == 0
