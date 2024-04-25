@@ -6,7 +6,13 @@ Description: task manager
              https://task-manager-srxp.onrender.com
 
 Commands: 
-        Install - `make install`,
+        Install - `make setup`,
         start guincorn - `make start`,
         start djando server - `make dev`,
         linter - `make lint`,
+        start tests - `male test`
+
+Environment variables: Required environment variables in the .env.sample file
+
+Run:
+to run on your local computer, create a ".env" file in the project root and add the necessary environment variables from .env.sample to it. To install the environment, use the `make setup` command. To start the Django server, use the `make dev` command.
