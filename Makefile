@@ -22,7 +22,7 @@ lint:
 	poetry run flake8 task_manager
 
 test:
-	python manage.py test
+	@$(MANAGE) test
 
 compil:
 	python manage.py compilemessages
