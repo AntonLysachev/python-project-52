@@ -4,9 +4,6 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up environment variables
-        run: |
-          echo "My DATABASE_URL value is ${{ secrets.DATABASE_URL }}"
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
