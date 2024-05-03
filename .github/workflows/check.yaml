@@ -1,12 +1,11 @@
 name: auto-tests
 on: push
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
 jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up environment variables
-        run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
