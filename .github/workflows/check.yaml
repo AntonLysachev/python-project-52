@@ -6,7 +6,7 @@ jobs:
     steps:
       - name: Set up environment variables
         run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+          echo "My DATABASE_URL value is ${{ secrets.DATABASE_URL }}"
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
