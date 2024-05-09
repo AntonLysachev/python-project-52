@@ -32,7 +32,10 @@ class LoginView(TemplateView):
             login(request, user)
             messages.info(request, _('You are logged in'))
             return redirect('index')
-        form.add_error(None, _("Please enter the correct username and password. Both fields can be case sensitive"))
+        form.add_error(None, _("""
+                               Please enter the correct username and password.
+                                Both fields can be case sensitive
+                               """))
         return render(request, 'login.html', {'form': form})
 
 
