@@ -42,6 +42,9 @@ msgstr "Автор"
 msgid "Sign in"
 msgstr "Вход"
 
+msgid "Login"
+msgstr "Войти"
+
 msgid "Logout"
 msgstr "Выход"
 
