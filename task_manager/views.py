@@ -32,7 +32,7 @@ class LoginView(TemplateView):
             login(request, user)
             messages.info(request, _('You are logged in'))
             return redirect('index')
-        form.add_error(None, _("Пожалуйста, введите правильные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру"))
+        form.add_error(None, _("Please enter the correct username and password. Both fields can be case sensitive"))
         return render(request, 'login.html', {'form': form})
 
 
@@ -40,9 +40,3 @@ def logout_view(request):
     logout(request)
     messages.info(request, _('You are logged out'))
     return redirect('index')
-
-
-def error(request):
-    a = None
-    a.hello()
-    return HttpResponse("Hello, world. You're at the pollapp error.")
