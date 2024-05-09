@@ -49,7 +49,7 @@ class UserUpdateView(LoginRequiredMixin, TemplateView):
 
     context = {'url_name': 'user_update',
                'head': _('Change user'),
-               'button': _('Edit')}
+               'button': _('Update')}
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
