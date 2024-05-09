@@ -12,6 +12,7 @@ from django.forms.models import model_to_dict
 from django.utils.translation import gettext as _
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import FormView
 
 
 class BaseTasksView(TemplateView):
@@ -65,6 +66,7 @@ class TaskCreateView(LoginRequiredMixin, BaseTasksView):
             task = form.save(commit=False)
             task.autor = request.user
             task.save()
+            form.save_m2m()
             task.status = form.cleaned_data.get('status')
             task.executor = form.cleaned_data.get('executor')
             messages.success(request, _('Task created successfully'))
