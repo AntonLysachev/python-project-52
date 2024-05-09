@@ -100,7 +100,7 @@ msgid "Create status"
 msgstr "Создать статус"
 
 msgid "Create task"
-msgstr "Создать Задачу"
+msgstr "Создать задачу"
 
 msgid "Update status"
 msgstr "Изменение статуса"
