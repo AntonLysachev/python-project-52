@@ -67,6 +67,7 @@ class TaskCreateView(LoginRequiredMixin, BaseTasksView):
             task.save()
             task.status = form.cleaned_data.get('status')
             task.executor = form.cleaned_data.get('executor')
+            messages.success(request, _('Task created successfully'))
             return redirect('tasks')
         self.context['form'] = form
         return render(request, 'tasks/form.html', context=self.context)
