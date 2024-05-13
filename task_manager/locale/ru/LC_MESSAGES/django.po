@@ -215,3 +215,6 @@ msgstr "Метка успешно изменена"
 
 msgid "Label successfully created"
 msgstr "Метка успешно создана"
+
+msgid "Cannot delete user because they have associated tasks"
+msgstr "Невозможно удалить пользователя, потому что он используется"
