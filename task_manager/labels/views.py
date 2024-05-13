@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 from .models import Label
 from .forms import LabelForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from task_manager.mixins import LoginRequiredMixin
 
 
 class LabelsIndexView(LoginRequiredMixin, TemplateView):

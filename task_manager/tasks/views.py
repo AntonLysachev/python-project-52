@@ -11,7 +11,7 @@ from .forms import TaskForm, TaskFilterForm
 from django.forms.models import model_to_dict
 from django.utils.translation import gettext as _
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from task_manager.mixins import LoginRequiredMixin
 
 
 class BaseTasksView(TemplateView):

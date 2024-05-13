@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 from .models import Status
 from .forms import StatusForm
 from django.db.models.deletion import ProtectedError
-from django.contrib.auth.mixins import LoginRequiredMixin
+from task_manager.mixins import LoginRequiredMixin
 
 
 class StatusesIndexView(LoginRequiredMixin, TemplateView):

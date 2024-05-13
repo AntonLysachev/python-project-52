@@ -1,12 +1,12 @@
 from typing import Any
 from django.http import HttpRequest
 from django.http.response import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.generic import TemplateView
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from .forms import LoginForm
+from django.contrib.auth.views import LoginView , LogoutView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext_lazy as _
+from django.contrib import messages
 
 
 class IndexView(TemplateView):
@@ -15,31 +15,15 @@ class IndexView(TemplateView):
         return render(request, 'index.html')
 
 
-class LoginView(TemplateView):
+class LoginView(SuccessMessageMixin, LoginView):
+    template_name = 'login.html'
+    success_message =  _('You are logged in')
+    
 
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if 'next' in request.GET:
-            messages.error(request, _('You are not authorized! Please log in'))
-        form = LoginForm()
-        return render(request, 'login.html', {'form': form})
-
-    def post(self, request, *args, **kwargs):
-        form = LoginForm(request.POST)
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user:
-            login(request, user)
-            messages.info(request, _('You are logged in'))
-            return redirect('index')
-        form.add_error(None, _("""
-                               Please enter the correct username and password.
-                                Both fields can be case sensitive
-                               """))
-        return render(request, 'login.html', {'form': form})
-
-
-def logout_view(request):
-    logout(request)
-    messages.info(request, _('You are logged out'))
-    return redirect('index')
+class LogoutView(SuccessMessageMixin, LogoutView):
+    next_page = 'index'
+    
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        messages.success(request, _('You are logged out'))
+        return response

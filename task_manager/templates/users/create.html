@@ -6,12 +6,11 @@
 {% block content %}
 <div class="container wrapper flex-grow-1">
     <h1 class="my-4">
-{{ head }}
+{% translate 'Sign up' %}
     </h1>
-<form action="{% if id %}{% url url_name id=id %}{% else %}{% url url_name %}{% endif %}" method="post">
-  {% csrf_token %}
+<form method="post">{% csrf_token %}
   {% bootstrap_form form %}
-  <input class="btn btn-primary" type="submit" value={{ button }}>
+    <input class="btn btn-primary" type="submit" value="{% translate 'Register' %}">
 </form>
 
   </div>
