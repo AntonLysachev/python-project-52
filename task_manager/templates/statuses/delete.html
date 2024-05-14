@@ -8,10 +8,10 @@
         <h1 class="my-4">    
         {% translate 'Deleting a status' %}
         </h1> 
-    <p>{% translate 'Are you sure you want to delete' %} {{ name }}</p>
-    <form action="{% url 'status_delete' id=id %}" method="post">
-    {% csrf_token %}
-    <input class="btn btn-danger" type="submit" value="{% translate 'Yes, delete' %}">
+    <form method="post">{% csrf_token %}
+        <p>{% translate 'Are you sure you want to delete' %} "{{ object }}"?</p>
+        {{ form }}
+        <input class="btn btn-danger" type="submit" value="{% translate 'Yes, delete' %}">
     </form>
 </div>
 {% endblock %}
