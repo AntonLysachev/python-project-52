@@ -4,6 +4,7 @@ from task_manager.tasks.models import Task
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.db.models.deletion import ProtectedError
+from django.db import IntegrityError
 
 
 class StatusTestCase(TestCase):
@@ -31,8 +32,9 @@ class StatusTestCase(TestCase):
         assert status.name == 'Name2'
 
     def test_delete_exception_status(self):
-        status = Status.objects.get(id=1)
-        self.assertRaises(ProtectedError, status.delete)
+        with self.assertRaises(ProtectedError):
+            status = Status.objects.get(id=1)
+            status.delete()
 
     def test_delete_status(self):
         task = Task.objects.get(id=1)
@@ -40,3 +42,7 @@ class StatusTestCase(TestCase):
         status = Status.objects.get(id=1)
         status.delete()
         assert Status.objects.count() == 0
+
+    def test_duplicate_label(self):
+        with self.assertRaises(IntegrityError):
+            Status.objects.create(name='Name')

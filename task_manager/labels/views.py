@@ -29,7 +29,7 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.autor = self.request.user
         response = super().form_valid(form)
-        messages.success(self.request, _('Label created successfully'))
+        messages.success(self.request, _('Label successfully created'))
         return response
 
 

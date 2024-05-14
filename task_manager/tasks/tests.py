@@ -4,6 +4,7 @@ from task_manager.statuses.models import Status
 from task_manager.labels.models import Label
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.db import IntegrityError
 
 
 class TaskTestCase(TestCase):
@@ -42,3 +43,27 @@ class TaskTestCase(TestCase):
         task = Task.objects.get(id=1)
         task.delete()
         assert Task.objects.count() == 0
+
+    def test_add_label_to_task(self):
+        task = Task.objects.get(id=1)
+        label2 = Label.objects.create(name='Label2')
+        task.labels.add(label2)
+        assert label2 in task.labels.all()
+
+    def test_remove_label_from_task(self):
+        task = Task.objects.get(id=1)
+        label = Label.objects.get(id=1)
+        task.labels.remove(label)
+        assert label not in task.labels.all()
+
+    def test_change_task_status(self):
+        task = Task.objects.get(id=1)
+        status2 = Status.objects.create(name='Status2')
+        task.status = status2
+        task.save()
+        assert task.status == status2
+
+    def test_create_task_without_status(self):
+        user = User.objects.get(id=1)
+        with self.assertRaises(IntegrityError):
+            Task.objects.create(name='Task2', description='description2', autor=user, executor=user)

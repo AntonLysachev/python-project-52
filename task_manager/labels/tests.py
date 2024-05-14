@@ -1,5 +1,6 @@
 from django.test import TestCase
 from .models import Label
+from django.db import IntegrityError
 
 
 class LabelTestCase(TestCase):
@@ -19,3 +20,7 @@ class LabelTestCase(TestCase):
         label = Label.objects.get(id=1)
         label.delete()
         assert Label.objects.count() == 0
+
+    def test_duplicate_label(self):
+        with self.assertRaises(IntegrityError):
+            Label.objects.create(name='Label')
