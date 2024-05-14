@@ -2,7 +2,8 @@ from typing import Any
 from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from .models import Label
@@ -19,77 +20,43 @@ class LabelsIndexView(LoginRequiredMixin, TemplateView):
         return render(request, 'labels/index.html', context={'labels': labels})
 
 
-class LabelCreateView(LoginRequiredMixin, TemplateView):
+class LabelCreateView(LoginRequiredMixin, CreateView):
+    model = Label
+    form_class = LabelForm
+    template_name = 'labels/create.html'
+    success_url = reverse_lazy('labels')
 
-    context = {'url_name': 'label_create',
-               'title': _('Create label'),
-               'button': _('Create')}
-
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-
-        form = LabelForm()
-        self.context['form'] = form
-
-        return render(request, 'labels/form.html', self.context)
-
-    def post(self, request, *args, **kwargs) -> HttpRequest:
-        form = LabelForm(request.POST)
-        self.context['form'] = form
-        if form.is_valid():
-            form.save()
-            messages.success(request, _('Label successfully created'))
-            return redirect('labels')
-
-        return render(request, 'labels/form.html', self.context)
+    def form_valid(self, form):
+        form.instance.autor = self.request.user
+        response = super().form_valid(form)
+        messages.success(self.request, _('Label created successfully'))
+        return response
 
 
-class LabelUpdateView(LoginRequiredMixin, TemplateView):
+class LabelUpdateView(LoginRequiredMixin, UpdateView):
+    model = Label
+    form_class = LabelForm
+    template_name = 'labels/update.html'
+    success_url = reverse_lazy('labels')
 
-    context = {'url_name': 'label_update',
-               'title': _('Update label'),
-               'button': _('Update')}
-
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-
-        label_id = kwargs.get('id')
-        label = Label.objects.get(id=label_id)
-        form = LabelForm(instance=label)
-        self.context['form'] = form
-        self.context['id'] = label_id
-
-        return render(request, 'labels/form.html', self.context)
-
-    def post(self, request, *args, ** kwargs) -> HttpRequest:
-
-        label_id = kwargs.get('id')
-        label = Label.objects.get(id=label_id)
-        form = LabelForm(request.POST, instance=label)
-        self.context['form'] = form
-        self.context['id'] = label_id
-        if form.is_valid():
-            form.save()
-            messages.success(request, _('Label changed successfully'))
-            return redirect('labels')
-        return render(request, 'labels/form.html', self.context)
+    def form_valid(self, form):
+        form.instance.autor = self.request.user
+        response = super().form_valid(form)
+        messages.success(self.request, _('Label changed successfully'))
+        return response
 
 
-class LabelDeleteView(LoginRequiredMixin, TemplateView):
+class LabelDeleteView(LoginRequiredMixin, DeleteView):
+    model = Label
+    template_name = 'labels/delete.html'
+    success_url = reverse_lazy('labels')
 
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
 
-        label_id = kwargs.get('id')
-        label = Label.objects.get(id=label_id)
-        name = label.name
-        return render(request, 'labels/delete.html', context={'name': name, 'id': label_id})
-
-    def post(self, request, *args, **kwargs):
-        label_id = kwargs.get('id')
-        label = Label.objects.get(id=label_id)
-        tasks = label.task_set.all()
-        if tasks:
+        label = self.get_object()
+        if label.task_set.all():
             messages.error(request, _('Cannot delete label because it is in use'))
         else:
             label.delete()
             messages.success(request, _('Label deleted successfully'))
-
-        return redirect('labels')
+        return redirect(self.success_url)
