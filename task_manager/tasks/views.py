@@ -13,24 +13,26 @@ from django.forms.models import model_to_dict
 from django.utils.translation import gettext as _
 from django.contrib import messages
 from task_manager.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 
 
-class BaseTasksView(TemplateView):
+class BaseTaskView(LoginRequiredMixin, SuccessMessageMixin):
+    model = Task
+    template_name = 'form.html'
+    success_url = reverse_lazy('tasks')
 
-    def get_context(self) -> dict:
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return response
+
+
+class TasksIndexView(LoginRequiredMixin, TemplateView):
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         context = {}
         context['statuses'] = Status.objects.all()
         context['executors'] = User.objects.filter(is_active=True)
         context['labels'] = Label.objects.all()
-        context['form'] = TaskForm
-        return context
-
-
-class TasksIndexView(LoginRequiredMixin, BaseTasksView):
-
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        context = self.get_context()
-        context['tasks'] = Task.objects.all()
         context['form'] = TaskFilterForm
         form = TaskFilterForm(request.GET)
         form.is_valid()
@@ -46,13 +48,14 @@ class TasksIndexView(LoginRequiredMixin, BaseTasksView):
                 tasks = tasks.filter(autor=request.user)
             context['form'] = form
             context['tasks'] = tasks
+        else:
+            context['tasks'] = Task.objects.all()
         return render(request, 'tasks/index.html', context=context)
 
 
 class TaskShowView(LoginRequiredMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-
         task_id = kwargs.get('id')
         task = Task.objects.get(id=task_id)
         task_dict = model_to_dict(task)
@@ -66,42 +69,42 @@ class TaskShowView(LoginRequiredMixin, TemplateView):
         return render(request, 'tasks/show.html', context=task_dict)
 
 
-class TaskCreateView(LoginRequiredMixin, CreateView):
-    model = Task
+class TaskCreateView(BaseTaskView, CreateView):
+    success_message = _("Task created successfully")
     form_class = TaskForm
-    template_name = 'tasks/create.html'
-    success_url = reverse_lazy('tasks')
 
     def form_valid(self, form):
         form.instance.autor = self.request.user
         response = super().form_valid(form)
-        messages.success(self.request, _('Task created successfully'))
         return response
 
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Create task'
+        context['button'] = 'Create'
+        return context
 
-class TaskUpdateView(LoginRequiredMixin, UpdateView):
-    model = Task
+
+class TaskUpdateView(BaseTaskView, UpdateView):
+    success_message = _("The task was successfully modified")
     form_class = TaskForm
-    template_name = 'tasks/update.html'
-    success_url = reverse_lazy('tasks')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, _('The task was successfully modified'))
-        return response
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Update task'
+        context['button'] = 'Update'
+        return context
 
 
-class TaskDeleteView(LoginRequiredMixin, DeleteView):
-    model = Task
+class TaskDeleteView(BaseTaskView, DeleteView):
     template_name = 'tasks/delete.html'
-    success_url = reverse_lazy('tasks')
+    success_message = _("Task successfully deleted")
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
-
         task = self.get_object()
         if task.autor == request.user:
             task.delete()
-            messages.success(request, _('Task successfully deleted'))
+            messages.success(request, self.success_message)
         else:
             messages.error(request, _('Only its author can delete a task'))
         return redirect(self.success_url)

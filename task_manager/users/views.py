@@ -9,7 +9,25 @@ from django.contrib.auth.models import User
 from .forms import UserFormCreated
 from django.utils.translation import gettext_lazy as _
 from task_manager.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models.deletion import ProtectedError
+
+
+class BaseUserView(SuccessMessageMixin):
+    model = User
+    template_name = 'form.html'
+    success_url = reverse_lazy('users')
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object != request.user:
+            messages.error(self.request, _('You do not have permission to change another user'))
+            return redirect('users')
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return response
 
 
 class UsersIndexView(TemplateView):
@@ -19,34 +37,35 @@ class UsersIndexView(TemplateView):
         return render(request, 'users/index.html', context={'users': users})
 
 
-class UserCreateView(CreateView):
-    model = User
+class UserCreateView(BaseUserView, CreateView):
     form_class = UserFormCreated
-    template_name = 'users/create.html'
     success_url = reverse_lazy('login')
+    success_message = _("User successfully registered")
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, _('User successfully registered'))
-        return response
+    def get(self, request, *args, **kwargs):
+        return super(CreateView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Sign up'
+        context['button'] = 'Register'
+        return context
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
-    model = User
+class UserUpdateView(BaseUserView, LoginRequiredMixin, UpdateView):
     form_class = UserFormCreated
-    template_name = 'users/update.html'
-    success_url = reverse_lazy('users')
+    success_message = _("User successfully changed")
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, _('User successfully changed'))
-        return response
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Change user'
+        context['button'] = 'Update'
+        return context
 
 
-class UserDeleteView(LoginRequiredMixin, DeleteView):
-    model = User
+class UserDeleteView(BaseUserView, LoginRequiredMixin, DeleteView):
+
     template_name = 'users/delete.html'
-    success_url = reverse_lazy('users')
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
 

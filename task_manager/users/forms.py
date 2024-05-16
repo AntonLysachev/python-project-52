@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.forms import ValidationError
 
 
 class UserFormCreated(UserCreationForm):
@@ -16,3 +17,11 @@ class UserFormCreated(UserCreationForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username', 'password1', 'password2']
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if self.instance.username == username:
+            return username
+        if User.objects.filter(username=username).exists():
+            raise ValidationError(_('A user with the same name already exists'))
+        return username

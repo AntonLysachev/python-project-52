@@ -9,6 +9,17 @@ from django.utils.translation import gettext as _
 from .models import Label
 from .forms import LabelForm
 from task_manager.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+
+
+class BaseLabelView(LoginRequiredMixin, SuccessMessageMixin):
+    model = Label
+    template_name = 'form.html'
+    success_url = reverse_lazy('labels')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return response
 
 
 class LabelsIndexView(LoginRequiredMixin, TemplateView):
@@ -20,36 +31,30 @@ class LabelsIndexView(LoginRequiredMixin, TemplateView):
         return render(request, 'labels/index.html', context={'labels': labels})
 
 
-class LabelCreateView(LoginRequiredMixin, CreateView):
-    model = Label
+class LabelCreateView(BaseLabelView, CreateView):
     form_class = LabelForm
-    template_name = 'labels/create.html'
-    success_url = reverse_lazy('labels')
+    success_message = _('Label successfully created')
 
-    def form_valid(self, form):
-        form.instance.autor = self.request.user
-        response = super().form_valid(form)
-        messages.success(self.request, _('Label successfully created'))
-        return response
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Create label'
+        context['button'] = 'Create'
+        return context
 
 
-class LabelUpdateView(LoginRequiredMixin, UpdateView):
-    model = Label
+class LabelUpdateView(BaseLabelView, UpdateView):
     form_class = LabelForm
-    template_name = 'labels/update.html'
-    success_url = reverse_lazy('labels')
+    success_message = _('Label changed successfully')
 
-    def form_valid(self, form):
-        form.instance.autor = self.request.user
-        response = super().form_valid(form)
-        messages.success(self.request, _('Label changed successfully'))
-        return response
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Update label'
+        context['button'] = 'Update'
+        return context
 
 
-class LabelDeleteView(LoginRequiredMixin, DeleteView):
-    model = Label
+class LabelDeleteView(BaseLabelView, DeleteView):
     template_name = 'labels/delete.html'
-    success_url = reverse_lazy('labels')
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
 

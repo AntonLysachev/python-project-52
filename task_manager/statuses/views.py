@@ -10,9 +10,20 @@ from .models import Status
 from .forms import StatusForm
 from django.db.models.deletion import ProtectedError
 from task_manager.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 
 
-class StatusesIndexView(LoginRequiredMixin, TemplateView):
+class BaseStatusView(LoginRequiredMixin, SuccessMessageMixin):
+    model = Status
+    template_name = 'form.html'
+    success_url = reverse_lazy('statuses')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return response
+
+
+class StatusesIndexView(BaseStatusView, TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
@@ -21,34 +32,30 @@ class StatusesIndexView(LoginRequiredMixin, TemplateView):
         return render(request, 'statuses/index.html', context={'statuses': statuses})
 
 
-class StatusCreateView(LoginRequiredMixin, CreateView):
-    model = Status
+class StatusCreateView(BaseStatusView, CreateView):
     form_class = StatusForm
-    template_name = 'statuses/create.html'
-    success_url = reverse_lazy('statuses')
+    success_message = _('Status successfully created')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, _('Status successfully created'))
-        return response
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Create status'
+        context['button'] = 'Create'
+        return context
 
 
-class StatusUpdateView(LoginRequiredMixin, UpdateView):
-    model = Status
+class StatusUpdateView(BaseStatusView, UpdateView):
     form_class = StatusForm
-    template_name = 'statuses/update.html'
-    success_url = reverse_lazy('statuses')
+    success_message = _('Status changed successfully')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, _('Status changed successfully'))
-        return response
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Update status'
+        context['button'] = 'Update'
+        return context
 
 
-class StatusDeleteView(LoginRequiredMixin, DeleteView):
-    model = Status
+class StatusDeleteView(BaseStatusView, DeleteView):
     template_name = 'statuses/delete.html'
-    success_url = reverse_lazy('statuses')
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
 
@@ -58,5 +65,4 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
             messages.success(request, _('Status deleted successfully'))
         except ProtectedError:
             messages.error(request, _('Cannot delete status because it is in use'))
-            return redirect('users')
         return redirect(self.success_url)
