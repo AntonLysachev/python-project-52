@@ -1,10 +1,13 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from .models import Task
 from task_manager.statuses.models import Status
 from task_manager.labels.models import Label
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from django.forms.models import model_to_dict
 
 
 class TaskTestCase(TestCase):
@@ -66,4 +69,67 @@ class TaskTestCase(TestCase):
     def test_create_task_without_status(self):
         user = User.objects.get(id=1)
         with self.assertRaises(IntegrityError):
-            Task.objects.create(name='Task2', description='description2', autor=user, executor=user)
+            Task.objects.create(name='Task2',
+                                description='description2',
+                                autor=user,
+                                executor=user)
+
+
+class TaskViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = get_user_model().objects.create_user(username='testuser', 
+                                                         password='testpass')
+        self.status = Status.objects.create(name='Test Status')
+        self.label = Label.objects.create(name='Test Label')
+        self.task = Task.objects.create(
+            name='Task',
+            description='Test Description',
+            status=self.status,
+            autor=self.user,
+            executor=self.user
+        )
+        self.task.labels.add(self.label)
+
+    def test_task_index_view(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.get(reverse('tasks'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Test')
+
+    def test_task_show_view(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.get(reverse('task_show', args=[self.task.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Test')
+
+    def test_task_create_view(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.post(reverse('task_create'), {
+            'title': 'New Task',
+            'description': 'New Description',
+            'status': self.status.id,
+            'executor': self.user.id,
+            'labels': [self.label.id]
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Task.objects.filter(title='New Task').exists())
+
+    def test_task_update_view(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.post(reverse('task_update', args=[self.task.id]), {
+            'title': 'Updated Task',
+            'description': 'Updated Description',
+            'status': self.status.id,
+            'executor': self.user.id,
+            'labels': [self.label.id]
+        })
+        self.assertEqual(response.status_code, 302)
+        self.task.refresh_from_db()
+        self.assertEqual(self.task.title, 'Updated Task')
+
+    def test_task_delete_view(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.post(reverse('task_delete', args=[self.task.id]))
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Task.objects.filter(id=self.task.id).exists())
