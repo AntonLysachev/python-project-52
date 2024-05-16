@@ -7,7 +7,6 @@ from django.db import IntegrityError
 from django.db.models.deletion import ProtectedError
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-import logging
 
 
 class UsersTestCase(TestCase):
@@ -52,7 +51,9 @@ class UsersTestCase(TestCase):
         with self.assertRaises(IntegrityError):
             User.objects.create(username='TestUser', password=make_password('password'))
 
+
 class UserViewsTest(TestCase):
+
     def setUp(self):
         self.client = Client()
         self.user = get_user_model().objects.create_user(username='testuser', password='testpass')

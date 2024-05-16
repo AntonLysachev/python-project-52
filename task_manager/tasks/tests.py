@@ -7,7 +7,6 @@ from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.forms.models import model_to_dict
 
 
 class TaskTestCase(TestCase):
@@ -78,7 +77,7 @@ class TaskTestCase(TestCase):
 class TaskViewTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = get_user_model().objects.create_user(username='testuser', 
+        self.user = get_user_model().objects.create_user(username='testuser',
                                                          password='testpass')
         self.status = Status.objects.create(name='Test Status')
         self.label = Label.objects.create(name='Test Label')

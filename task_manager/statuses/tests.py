@@ -53,7 +53,7 @@ class StatusTestCase(TestCase):
 class StatusViewTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = get_user_model().objects.create_user(username='testuser', 
+        self.user = get_user_model().objects.create_user(username='testuser',
                                                          password='testpass')
         self.status = Status.objects.create(name='Test Status')
 
