@@ -10,11 +10,3 @@ class StatusForm(ModelForm):
     class Meta:
         model = Status
         fields = ['name']
-
-    def clean_name(self):
-        changed_data = self.changed_data
-        name = self.cleaned_data.get('name')
-        if 'name' in changed_data:
-            if Status.objects.filter(name=name).exists():
-                self.add_error('name', _('A task status with the same name already exists'))
-        return name

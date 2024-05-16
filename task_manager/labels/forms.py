@@ -11,11 +11,3 @@ class LabelForm(ModelForm):
     class Meta:
         model = Label
         fields = ['name']
-
-    def clean_name(self):
-        changed_data = self.changed_data
-        name = self.cleaned_data.get('name')
-        if 'name' in changed_data:
-            if Label.objects.filter(name=name).exists():
-                self.add_error('name', _('A task status with the same name already exists'))
-        return name

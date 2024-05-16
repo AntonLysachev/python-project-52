@@ -126,6 +126,9 @@ msgstr "Метка"
 msgid "Tasks"
 msgstr "Задачи"
 
+msgid "Task"
+msgstr "Задача"
+
 msgid "Description"
 msgstr "Описание"
 
@@ -204,6 +207,9 @@ msgstr "Задача успешно изменена"
 msgid "Task created successfully"
 msgstr "Задача успешно создана"
 
+# msgid "Task with the same Name already exists"
+# msgstr "Задача с таким именем уже существует"
+
 msgid "Cannot delete label because it is in use"
 msgstr "Невозможно удалить метку, потому что она используется"
 
@@ -215,6 +221,9 @@ msgstr "Метка успешно изменена"
 
 msgid "Label successfully created"
 msgstr "Метка успешно создана"
+
+msgid "A label with the same name already exists"
+msgstr "Метка с таким именем уже существует"
 
 msgid "Cannot delete user because they have associated tasks"
 msgstr "Невозможно удалить пользователя, потому что он используется"
