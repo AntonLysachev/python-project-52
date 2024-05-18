@@ -75,6 +75,8 @@ class UserViewsTest(TestCase):
             'first_name': 'Test',
             'last_name': 'User',
             'username': 'testuser',
+            'password1': 'testpass2',
+            'password2': 'testpass2',
         })
         self.assertEqual(response.status_code, 302)
         self.user.refresh_from_db()

@@ -105,19 +105,19 @@ class TaskViewTest(TestCase):
     def test_task_create_view(self):
         self.client.login(username='testuser', password='testpass')
         response = self.client.post(reverse('task_create'), {
-            'title': 'New Task',
+            'name': 'New Task',
             'description': 'New Description',
             'status': self.status.id,
             'executor': self.user.id,
             'labels': [self.label.id]
         })
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(Task.objects.filter(title='New Task').exists())
+        self.assertTrue(Task.objects.filter(name='New Task').exists())
 
     def test_task_update_view(self):
         self.client.login(username='testuser', password='testpass')
         response = self.client.post(reverse('task_update', args=[self.task.id]), {
-            'title': 'Updated Task',
+            'name': 'Updated Task',
             'description': 'Updated Description',
             'status': self.status.id,
             'executor': self.user.id,
@@ -125,7 +125,7 @@ class TaskViewTest(TestCase):
         })
         self.assertEqual(response.status_code, 302)
         self.task.refresh_from_db()
-        self.assertEqual(self.task.title, 'Updated Task')
+        self.assertEqual(self.task.name, 'Updated Task')
 
     def test_task_delete_view(self):
         self.client.login(username='testuser', password='testpass')
