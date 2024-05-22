@@ -17,10 +17,6 @@ class BaseLabelView(LoginRequiredMixin, SuccessMessageMixin):
     template_name = 'form.html'
     success_url = reverse_lazy('labels')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        return response
-
 
 class LabelsIndexView(LoginRequiredMixin, TemplateView):
 
@@ -34,27 +30,23 @@ class LabelsIndexView(LoginRequiredMixin, TemplateView):
 class LabelCreateView(BaseLabelView, CreateView):
     form_class = LabelForm
     success_message = _('Label successfully created')
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Create label'
-        context['button'] = 'Create'
-        return context
+    extra_context = {'title': 'Create label', 'button': 'Create'}
 
 
 class LabelUpdateView(BaseLabelView, UpdateView):
     form_class = LabelForm
     success_message = _('Label changed successfully')
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Update label'
-        context['button'] = 'Update'
-        return context
+    extra_context = {'title': 'Update label', 'button': 'Update'}
 
 
 class LabelDeleteView(BaseLabelView, DeleteView):
-    template_name = 'labels/delete.html'
+    extra_context = {'title': 'Deleting a user', 'button': 'Yes, delete', 'question':'Are you sure you want to delete' }
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        label = self.get_object()
+        context['user_to_delete'] = f"{label.name}?"
+        return context 
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
 

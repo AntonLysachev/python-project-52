@@ -11,23 +11,20 @@ from django.utils.translation import gettext_lazy as _
 from task_manager.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models.deletion import ProtectedError
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 
-class BaseUserView(SuccessMessageMixin):
+class BaseUserView(UserPassesTestMixin, SuccessMessageMixin):
     model = User
     template_name = 'form.html'
     success_url = reverse_lazy('users')
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object != request.user:
-            messages.error(self.request, _('You do not have permission to change another user'))
-            return redirect('users')
-        return super().get(request, *args, **kwargs)
+    def test_func(self):
+        return self.get_object() == self.request.user
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        return response
+    def handle_no_permission(self):
+        messages.error(self.request, _('You do not have permission to change another user'))
+        return redirect('users')
 
 
 class UsersIndexView(TemplateView):
@@ -37,35 +34,30 @@ class UsersIndexView(TemplateView):
         return render(request, 'users/index.html', context={'users': users})
 
 
-class UserCreateView(BaseUserView, CreateView):
+class UserCreateView(SuccessMessageMixin, CreateView):
+    model = User
+    template_name = 'form.html'
     form_class = UserFormCreated
     success_url = reverse_lazy('login')
     success_message = _("User successfully registered")
-
-    def get(self, request, *args, **kwargs):
-        return super(CreateView, self).get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Sign up'
-        context['button'] = 'Register'
-        return context
+    extra_context = {'title': 'Sign up', 'button': 'Register'}
 
 
 class UserUpdateView(BaseUserView, LoginRequiredMixin, UpdateView):
     form_class = UserFormCreated
     success_message = _("User successfully changed")
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Change user'
-        context['button'] = 'Update'
-        return context
+    extra_context = {'title': 'Change user', 'button': 'Update'}
 
 
 class UserDeleteView(BaseUserView, LoginRequiredMixin, DeleteView):
 
-    template_name = 'users/delete.html'
+    extra_context = {'title': 'Deleting a user', 'button': 'Yes, delete', 'question':'Are you sure you want to delete' }
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        context['user_to_delete'] = f"{user.first_name} {user.last_name}?"
+        return context
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
 

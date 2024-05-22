@@ -21,10 +21,6 @@ class BaseTaskView(LoginRequiredMixin, SuccessMessageMixin):
     template_name = 'form.html'
     success_url = reverse_lazy('tasks')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        return response
-
 
 class TasksIndexView(LoginRequiredMixin, TemplateView):
 
@@ -72,33 +68,30 @@ class TaskShowView(LoginRequiredMixin, TemplateView):
 class TaskCreateView(BaseTaskView, CreateView):
     success_message = _("Task created successfully")
     form_class = TaskForm
+    extra_context = {'title': 'Create task', 'button': 'Create'}
 
     def form_valid(self, form):
         form.instance.autor = self.request.user
         response = super().form_valid(form)
         return response
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Create task'
-        context['button'] = 'Create'
-        return context
-
 
 class TaskUpdateView(BaseTaskView, UpdateView):
     success_message = _("The task was successfully modified")
     form_class = TaskForm
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Update task'
-        context['button'] = 'Update'
-        return context
+    extra_context = {'title': 'Update task', 'button': 'Update'}
 
 
 class TaskDeleteView(BaseTaskView, DeleteView):
-    template_name = 'tasks/delete.html'
+
     success_message = _("Task successfully deleted")
+    extra_context = {'title': 'Deleting a user', 'button': 'Yes, delete', 'question':'Are you sure you want to delete' }
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        task = self.get_object()
+        context['user_to_delete'] = f"{task.name}?"
+        return context
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
         task = self.get_object()

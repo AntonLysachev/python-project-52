@@ -18,10 +18,6 @@ class BaseStatusView(LoginRequiredMixin, SuccessMessageMixin):
     template_name = 'form.html'
     success_url = reverse_lazy('statuses')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        return response
-
 
 class StatusesIndexView(BaseStatusView, TemplateView):
 
@@ -35,27 +31,24 @@ class StatusesIndexView(BaseStatusView, TemplateView):
 class StatusCreateView(BaseStatusView, CreateView):
     form_class = StatusForm
     success_message = _('Status successfully created')
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Create status'
-        context['button'] = 'Create'
-        return context
+    extra_context = {'title': 'Create status', 'button': 'Create'}
 
 
 class StatusUpdateView(BaseStatusView, UpdateView):
     form_class = StatusForm
     success_message = _('Status changed successfully')
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Update status'
-        context['button'] = 'Update'
-        return context
+    extra_context = {'title': 'Update status', 'button': 'Update'}
 
 
 class StatusDeleteView(BaseStatusView, DeleteView):
-    template_name = 'statuses/delete.html'
+
+    extra_context = {'title': 'Deleting a user', 'button': 'Yes, delete', 'question':'Are you sure you want to delete' }
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        status = self.get_object()
+        context['user_to_delete'] = f"{status.name}?"
+        return context 
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
 
