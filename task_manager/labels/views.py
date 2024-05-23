@@ -40,13 +40,13 @@ class LabelUpdateView(BaseLabelView, UpdateView):
 
 
 class LabelDeleteView(BaseLabelView, DeleteView):
-    extra_context = {'title': 'Deleting a user', 'button': 'Yes, delete', 'question':'Are you sure you want to delete' }
+    extra_context = {'title': 'Deleting a user', 'button': 'Yes, delete', 'question': 'Are you sure you want to delete'}
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         label = self.get_object()
         context['user_to_delete'] = f"{label.name}?"
-        return context 
+        return context
 
     def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
 

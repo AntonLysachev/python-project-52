@@ -18,9 +18,7 @@ def get_content(addres):
         return data
 
 
-users = json.loads(get_content(build_fixture_path('user2.json')))
-user3 = users['user3']
-user4 = users['user4']
+usertest = json.loads(get_content(build_fixture_path('usertest.json')))
 
 
 class UserViewsTest(TestCase):
@@ -28,30 +26,39 @@ class UserViewsTest(TestCase):
 
     def setUp(self):
         self.client = Client()
-       
+
     def test_user_create_view(self):
-        response = self.client.post(reverse('user_create'), user3)
+        response = self.client.post(reverse('user_create'), usertest)
         self.assertEqual(response.status_code, 302)
-        user_exists = get_user_model().objects.filter(username = 'testuser3').exists()
-        self.assertFalse(user_exists)
+        user_exists = get_user_model().objects.filter(username='testuser').exists()
+        self.assertTrue(user_exists)
 
     def test_user_update_view(self):
-        self.client.login(username='testuser', password='testpass')
-        response = self.client.post(reverse('user_update', kwargs={'pk': 1}), user4)
+        self.client.login(username='UserTest', password='123')
+        user = get_user_model().objects.get(username='UserTest')
+        response = self.client.post(reverse('user_update', kwargs={'pk': user.pk}), usertest)
         self.assertEqual(response.status_code, 302)
-        user = get_user_model().objects.get(pk = 1)
-        self.assertEqual(user.first_name, 'Test4')
+        user = get_user_model().objects.get(pk=user.pk)
+        self.assertEqual(user.first_name, 'Test')
 
     def test_user_delete_view(self):
-        self.client.login(username='testuser', password='testpass')
-        response = self.client.post(reverse('user_delete', kwargs={'pk': 1}))
+        self.client.login(username='UserTest', password='123')
+        user = get_user_model().objects.get(username='UserTest')
+        response = self.client.post(reverse('user_delete', kwargs={'pk': user.pk}))
         self.assertEqual(response.status_code, 302)
-        user_exists = get_user_model().objects.filter(username = 'testuser').exists()
+        user_exists = get_user_model().objects.filter(username='UserTest').exists()
         self.assertFalse(user_exists)
 
     def test_user_update_view_forbidden(self):
-
-        self.client.login(username='testuser', password='testpass')
-        response = self.client.post(reverse('user_update', kwargs={'pk': 2}), user3)
+        self.client.login(username='UserTest', password='123')
+        response = self.client.post(reverse('user_update', kwargs={'pk': 2}), usertest)
         self.assertEqual(response.status_code, 302)
+        user = get_user_model().objects.get(pk=2)
+        self.assertNotEqual(user.first_name, 'Test')
 
+    def test_user_delete_view_forbidden(self):
+        self.client.login(username='UserTest', password='123')
+        response = self.client.post(reverse('user_delete', kwargs={'pk': 2}))
+        self.assertEqual(response.status_code, 302)
+        user_exists = get_user_model().objects.filter(pk=2).exists()
+        self.assertTrue(user_exists)

@@ -85,7 +85,7 @@ class TaskUpdateView(BaseTaskView, UpdateView):
 class TaskDeleteView(BaseTaskView, DeleteView):
 
     success_message = _("Task successfully deleted")
-    extra_context = {'title': 'Deleting a user', 'button': 'Yes, delete', 'question':'Are you sure you want to delete' }
+    extra_context = {'title': 'Deleting a user', 'button': 'Yes, delete', 'question': 'Are you sure you want to delete'}
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
