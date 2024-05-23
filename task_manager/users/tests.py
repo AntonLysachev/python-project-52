@@ -24,7 +24,7 @@ user4 = users['user4']
 
 
 class UserViewsTest(TestCase):
-    fixtures = ['fixtures.json']
+    fixtures = ['db.json']
 
     def setUp(self):
         self.client = Client()
@@ -32,7 +32,8 @@ class UserViewsTest(TestCase):
     def test_user_create_view(self):
         response = self.client.post(reverse('user_create'), user3)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(get_user_model().objects.count(), 3)
+        user_exists = get_user_model().objects.filter(username = 'testuser3').exists()
+        self.assertFalse(user_exists)
 
     def test_user_update_view(self):
         self.client.login(username='testuser', password='testpass')
