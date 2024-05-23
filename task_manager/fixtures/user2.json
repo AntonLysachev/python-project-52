@@ -1,0 +1,16 @@
+{
+    "user3": {
+    "first_name": "Test3",
+    "last_name": "User3",
+    "username": "testuser3",
+    "password1": "testpass3",
+    "password2": "testpass3"
+    },
+    "user4": {
+    "first_name": "Test4",
+    "last_name": "User",
+    "username": "testuser",
+    "password1": "testpass",
+    "password2": "testpass"
+    }
+}

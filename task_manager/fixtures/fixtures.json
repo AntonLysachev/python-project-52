@@ -8,5 +8,15 @@
             "username": "testuser",
             "password": "testpass"
         }
+    },
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "first_name": "Test2",
+            "last_name": "User2",
+            "username": "testuser2",
+            "password": "testpass2"
+        }
     }
 ]
