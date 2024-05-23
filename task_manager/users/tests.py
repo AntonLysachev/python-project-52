@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from task_manager.tasks.models import Task
 import os
 import json
 
@@ -41,8 +42,18 @@ class UserViewsTest(TestCase):
         user = get_user_model().objects.get(pk=user.pk)
         self.assertEqual(user.first_name, 'Test')
 
+    def test_user_delete_view_used_user(self):
+        self.client.login(username='UserTest', password='123')
+        user = get_user_model().objects.get(username='UserTest')
+        response = self.client.post(reverse('user_delete', kwargs={'pk': user.pk}))
+        self.assertEqual(response.status_code, 302)
+        user_exists = get_user_model().objects.filter(username='UserTest').exists()
+        self.assertTrue(user_exists)
+
     def test_user_delete_view(self):
         self.client.login(username='UserTest', password='123')
+        task = Task.objects.get(name='Test')
+        self.client.post(reverse('task_delete', args=[task.id]))
         user = get_user_model().objects.get(username='UserTest')
         response = self.client.post(reverse('user_delete', kwargs={'pk': user.pk}))
         self.assertEqual(response.status_code, 302)
