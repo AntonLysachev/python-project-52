@@ -19,6 +19,8 @@ dj-database-url = "^2.1.0"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.0.0"
+pytest = "^8.2.1"
+pytest-cov = "^5.0.0"
 
 [build-system]
 requires = ["poetry-core"]

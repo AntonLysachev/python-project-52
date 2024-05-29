@@ -24,5 +24,9 @@ lint:
 test:
 	@$(MANAGE) test
 
+test-coverage:
+	poetry run pytest --cov=task_manager --cov-report xml
+
+
 compil:
 	python manage.py compilemessages
