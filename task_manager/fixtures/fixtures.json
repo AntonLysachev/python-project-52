@@ -11,12 +11,12 @@
         "password": "123"
     },
     "task":{
-        "name": "TestTask"
+        "name": "Test"
     },
     "status":{
-        "name": "TestStatus"
+        "name": "Test"
     },
     "label":{
-        "name": "TestLabel"
+        "name": "Test"
     }
 }

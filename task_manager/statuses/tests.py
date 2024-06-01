@@ -14,6 +14,8 @@ class StatusViewTest(TestCase):
         self.client = Client()
         fixtures = json.loads(get_content(build_fixture_path('fixtures.json')))
         self.usertest = fixtures['usertest']
+        self.task_name = fixtures['task']['name']
+        self.status_name = fixtures['status']['name']
         userforlogin = fixtures['userforlogin']
         username = userforlogin['username']
         password = userforlogin['password']
@@ -22,7 +24,7 @@ class StatusViewTest(TestCase):
     def test_status_index_view(self):
         response = self.client.get(reverse('statuses'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Test')
+        self.assertContains(response, self.status_name)
 
     def test_status_create_view(self):
         response = self.client.post(reverse('status_create'), {
@@ -32,7 +34,7 @@ class StatusViewTest(TestCase):
         self.assertTrue(Status.objects.filter(name='New Status').exists())
 
     def test_status_update_view(self):
-        status = Status.objects.get(name='Test')
+        status = Status.objects.get(name=self.status_name)
         response = self.client.post(reverse('status_update', args=[status.id]), {
             'name': 'Updated Status',
         }, follow=True)
@@ -40,15 +42,15 @@ class StatusViewTest(TestCase):
         self.assertTrue(Status.objects.filter(name='Updated Status').exists())
 
     def test_status_delete_view_used_status(self):
-        status = Status.objects.get(name='Test')
+        status = Status.objects.get(name=self.status_name)
         response = self.client.post(reverse('status_delete', args=[status.id]), follow=True)
         self.assertContains(response, _('Cannot delete status because it is in use'))
         self.assertTrue(Status.objects.filter(id=status.id).exists())
 
     def test_status_delete_view(self):
-        task = Task.objects.get(name='Test')
+        task = Task.objects.get(name=self.task_name)
         self.client.post(reverse('task_delete', args=[task.id]))
-        status = Status.objects.get(name='Test')
+        status = Status.objects.get(name=self.status_name)
         response = self.client.post(reverse('status_delete', args=[status.id]), follow=True)
         self.assertContains(response, _('Status deleted successfully'))
         self.assertFalse(Status.objects.filter(id=status.id).exists())
