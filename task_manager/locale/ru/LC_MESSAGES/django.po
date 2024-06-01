@@ -207,8 +207,8 @@ msgstr "Задача успешно изменена"
 msgid "Task created successfully"
 msgstr "Задача успешно создана"
 
-# msgid "Task with the same Name already exists"
-# msgstr "Задача с таким именем уже существует"
+msgid "Task with the same Name already exists"
+msgstr "Задача с таким именем уже существует"
 
 msgid "Cannot delete label because it is in use"
 msgstr "Невозможно удалить метку, потому что она используется"
@@ -227,3 +227,15 @@ msgstr "Метка с таким именем уже существует"
 
 msgid "Cannot delete user because they have associated tasks"
 msgstr "Невозможно удалить пользователя, потому что он используется"
+
+msgid "Task Manager"
+msgstr "Менеджер задач"
+
+msgid "Hello from Hexlet!"
+msgstr "Привет от Хекслета!"
+
+msgid "Practical programming courses"
+msgstr "Практические курсы по программированию"
+
+msgid "To learn more"
+msgstr "Узнать больше"

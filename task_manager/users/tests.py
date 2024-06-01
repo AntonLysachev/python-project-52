@@ -1,9 +1,10 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.contrib.messages import get_messages
 from task_manager.tasks.models import Task
-from task_manager.fixtures.test_helpers import username, password, usertest
+from task_manager.utils.test_helpers import build_fixture_path, get_content
+from django.utils.translation import gettext as _
+import json
 
 
 class UserViewsTest(TestCase):
@@ -11,32 +12,34 @@ class UserViewsTest(TestCase):
 
     def setUp(self):
         self.client = Client()
+        fixtures = json.loads(get_content(build_fixture_path('fixtures.json')))
+        self.usertest = fixtures['usertest']
+        userforlogin = fixtures['userforlogin']
+        username = userforlogin['username']
+        password = userforlogin['password']
         self.client.login(username=username, password=password)
 
     def test_user_create_view(self):
-        response = self.client.post(reverse('user_create'), usertest)
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Пользователь успешно зарегистрирован')
+        response = self.client.post(reverse('user_create'), self.usertest, follow=True)
+        self.assertContains(response, _('User successfully registered'))
         user_exists = get_user_model().objects.filter(username='testuser').exists()
         self.assertTrue(user_exists)
 
     def test_user_update_view(self):
         user = get_user_model().objects.get(username='UserTest')
-        response = self.client.post(reverse('user_update', kwargs={'pk': user.pk}), usertest)
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Пользователь успешно изменен')
+        response = self.client.post(reverse(
+            'user_update',
+            kwargs={'pk': user.pk}),
+            self.usertest,
+            follow=True)
+        self.assertContains(response, _('User successfully changed'))
         user = get_user_model().objects.get(pk=user.pk)
         self.assertEqual(user.first_name, 'Test')
 
     def test_user_delete_view_used_user(self):
         user = get_user_model().objects.get(username='UserTest')
-        response = self.client.post(reverse('user_delete', kwargs={'pk': user.pk}))
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]),
-                         'Невозможно удалить пользователя, потому что он используется')
+        response = self.client.post(reverse('user_delete', kwargs={'pk': user.pk}), follow=True)
+        self.assertContains(response, _('Cannot delete user because they have associated tasks'))
         user_exists = get_user_model().objects.filter(username='UserTest').exists()
         self.assertTrue(user_exists)
 
@@ -44,26 +47,23 @@ class UserViewsTest(TestCase):
         task = Task.objects.get(name='Test')
         self.client.post(reverse('task_delete', args=[task.id]))
         user = get_user_model().objects.get(username='UserTest')
-        response = self.client.post(reverse('user_delete', kwargs={'pk': user.pk}))
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        message_texts = [str(message) for message in messages]
-        self.assertIn('Пользователь успешно удален', message_texts)
+        response = self.client.post(reverse('user_delete', kwargs={'pk': user.pk}), follow=True)
+        self.assertContains(response, _('User successfully deleted'))
         user_exists = get_user_model().objects.filter(username='UserTest').exists()
         self.assertFalse(user_exists)
 
     def test_user_update_view_forbidden(self):
-        response = self.client.post(reverse('user_update', kwargs={'pk': 2}), usertest)
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'У вас нет прав для изменения другого пользователя')
+        response = self.client.post(reverse(
+            'user_update',
+            kwargs={'pk': 2}),
+            self.usertest,
+            follow=True)
+        self.assertContains(response, _('You do not have permission to change another user'))
         user = get_user_model().objects.get(pk=2)
         self.assertNotEqual(user.first_name, 'Test')
 
     def test_user_delete_view_forbidden(self):
-        response = self.client.post(reverse('user_delete', kwargs={'pk': 2}))
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'У вас нет прав для изменения другого пользователя')
+        response = self.client.post(reverse('user_delete', kwargs={'pk': 2}), follow=True)
+        self.assertContains(response, _('You do not have permission to change another user'))
         user_exists = get_user_model().objects.filter(pk=2).exists()
         self.assertTrue(user_exists)

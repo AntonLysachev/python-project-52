@@ -14,7 +14,7 @@ from django.db.models.deletion import ProtectedError
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 
-class BaseUserView(UserPassesTestMixin, SuccessMessageMixin):
+class UserChangePermissionMixin(UserPassesTestMixin):
     model = User
     template_name = 'form.html'
     success_url = reverse_lazy('users')
@@ -43,13 +43,19 @@ class UserCreateView(SuccessMessageMixin, CreateView):
     extra_context = {'title': 'Sign up', 'button': 'Register'}
 
 
-class UserUpdateView(BaseUserView, LoginRequiredMixin, UpdateView):
+class UserUpdateView(UserChangePermissionMixin,
+                     SuccessMessageMixin,
+                     LoginRequiredMixin,
+                     UpdateView):
     form_class = UserFormCreated
     success_message = _("User successfully changed")
     extra_context = {'title': 'Change user', 'button': 'Update'}
 
 
-class UserDeleteView(BaseUserView, LoginRequiredMixin, DeleteView):
+class UserDeleteView(UserChangePermissionMixin,
+                     SuccessMessageMixin,
+                     LoginRequiredMixin,
+                     DeleteView):
 
     extra_context = {'title': 'Deleting a user',
                      'button': 'Yes, delete',

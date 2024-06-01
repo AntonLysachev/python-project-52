@@ -28,7 +28,7 @@ SECRET_KEY = "django-insecure-5vqa0%6bxh)z+o@w=&8pg42kk&f0pe4_yayxilw_(=_!3&p+dl
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG_SWITCH') == 'True'
-
+ROLLBAR_TOKEN = os.getenv('ROLLBAR_TOKEN')
 ALLOWED_HOSTS = ['webserver', 'localhost', '127.0.0.1', 'task-manager-srxp.onrender.com']
 
 
@@ -142,7 +142,7 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 
 ROLLBAR = {
-    'access_token': 'f5caac1d68c245ebb40b03669c575957',
+    'access_token': ROLLBAR_TOKEN,
     'environment': 'development' if DEBUG else 'production',
     'code_version': '1.0',
     'root': BASE_DIR,

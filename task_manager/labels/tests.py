@@ -2,8 +2,9 @@ from django.test import TestCase, Client
 from .models import Label
 from django.urls import reverse
 from task_manager.tasks.models import Task
-from django.contrib.messages import get_messages
-from task_manager.fixtures.test_helpers import username, password
+from task_manager.utils.test_helpers import build_fixture_path, get_content
+from django.utils.translation import gettext as _
+import json
 
 
 class LabelViewTest(TestCase):
@@ -11,6 +12,11 @@ class LabelViewTest(TestCase):
 
     def setUp(self):
         self.client = Client()
+        fixtures = json.loads(get_content(build_fixture_path('fixtures.json')))
+        self.usertest = fixtures['usertest']
+        userforlogin = fixtures['userforlogin']
+        username = userforlogin['username']
+        password = userforlogin['password']
         self.client.login(username=username, password=password)
 
     def test_label_index_view(self):
@@ -21,37 +27,28 @@ class LabelViewTest(TestCase):
     def test_label_create_view(self):
         response = self.client.post(reverse('label_create'), {
             'name': 'New Label',
-        })
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Метка успешно создана')
+        }, follow=True)
+        self.assertContains(response, _('Label successfully created'))
         self.assertTrue(Label.objects.filter(name='New Label').exists())
 
     def test_label_update_view(self):
         label = Label.objects.get(name='Test')
         response = self.client.post(reverse('label_update', args=[label.id]), {
             'name': 'Updated Label',
-        })
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Метка успешно изменена')
+        }, follow=True)
+        self.assertContains(response, _('Label changed successfully'))
         self.assertTrue(Label.objects.filter(name='Updated Label').exists())
 
     def test_label_delete_view_used_label(self):
         label = Label.objects.get(name='Test')
-        response = self.client.post(reverse('label_delete', args=[label.id]))
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Невозможно удалить метку, потому что она используется')
+        response = self.client.post(reverse('label_delete', args=[label.id]), follow=True)
+        self.assertContains(response, _('Cannot delete label because it is in use'))
         self.assertTrue(Label.objects.filter(id=label.id).exists())
 
     def test_label_delete_view(self):
         task = Task.objects.get(name='Test')
         self.client.post(reverse('task_delete', args=[task.id]))
         label = Label.objects.get(name='Test')
-        response = self.client.post(reverse('label_delete', args=[label.id]))
-        self.assertEqual(response.status_code, 302)
-        messages = list(get_messages(response.wsgi_request))
-        message_texts = [str(message) for message in messages]
-        self.assertIn('Метка успешно удалена', message_texts)
+        response = self.client.post(reverse('label_delete', args=[label.id]), follow=True)
+        self.assertContains(response, _('Label deleted successfully'))
         self.assertFalse(Label.objects.filter(id=label.id).exists())
